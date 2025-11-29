@@ -1,0 +1,131 @@
+[.env]
+spring.config.import=optional:file:.env[.properties]
+DB_HOST=
+DB_PORT=
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+JWT_SECRET=
+
+✅ ORDEM CERTA PARA CRIAR UM MÓDULO / RECURSO NO SPRING BOOT
+1️⃣ Model (Entity)
+
+Sempre comece pelo Model, porque ele define como a tabela será no banco:
+
+nome da tabela
+
+campos
+
+tipos
+
+chave primária (ID)
+
+constraints (nullable, unique etc.)
+
+➡️ É a base de tudo.
+
+2️⃣ DTOs (Opcional, mas recomendado)
+
+Após criar o Model, você cria os DTOs que vão representar:
+
+o que entra na API (request)
+
+o que sai da API (response)
+
+DTO evita expor o Model diretamente.
+
+Exemplo de DTO de registro:
+
+@Getter
+@Setter
+public class UserRegisterDTO {
+
+    @NotBlank(message = "O email é obrigatório")
+    @Email(message = "Formato de email inválido")
+    private String email;
+
+    @NotBlank(message = "O username é obrigatório")
+    @Size(min = 3, max = 20, message = "O username deve ter entre 3 e 20 caracteres")
+    private String username;
+
+    @NotBlank(message = "A senha é obrigatória")
+    @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
+    private String password;
+}
+
+3️⃣ Repository
+
+Depois da Entity e dos DTOs, crie o Repository.
+Ele acessa o banco de dados usando JPA.
+
+Exemplo:
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findByEmail(String email);
+
+    boolean existsByEmail(String email);
+}
+
+4️⃣ Service
+
+Agora crie a Service, onde fica:
+
+regras de negócio
+
+validações
+
+conversão DTO → Model
+
+chamadas ao repository
+
+Exemplo:
+
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository repo;
+
+    public User save(User user) {
+        return repo.save(user);
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return repo.findByEmail(email);
+    }
+
+    public List<User> findAll() {
+        return repo.findAll();
+    }
+}
+
+5️⃣ Controller
+
+Por último, crie o Controller — os endpoints HTTP.
+
+Exemplo:
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    @Autowired
+    private UserService service;
+
+    @GetMapping
+    public List<User> getAll() {
+        return service.findAll();
+    }
+
+    @GetMapping("/{email}")
+    public Optional<User> getByEmail(@PathVariable String email) {
+        return service.findByEmail(email);
+    }
+
+    @PostMapping
+    public User create(@RequestBody User user) {
+        return service.save(user);
+    }
+}
