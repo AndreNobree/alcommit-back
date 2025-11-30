@@ -1,18 +1,19 @@
 package com.albin.alcommit.controller;
 
+import com.albin.alcommit.dto.projects.ProjectAddDTO;
+import com.albin.alcommit.dto.projects.ProjectsResponseDTO;
 import com.albin.alcommit.model.Projects;
 import com.albin.alcommit.service.ProjectsService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/my-projects")
+@RequestMapping("/projects")
 public class ProjectsController {
 
     @Autowired
@@ -24,4 +25,14 @@ public class ProjectsController {
         List<Projects> projects = projectsService.returnAll();
         return ResponseEntity.ok(projects);
     }
+
+    @PostMapping("/new")
+    public ResponseEntity<ProjectsResponseDTO> newProject(@Valid @RequestBody ProjectAddDTO dto) {
+        //manda os dados para o service passando pelo DTO primeiro
+        ProjectsResponseDTO createdProject = projectsService.addNewProject(dto);
+
+        //manda sucess(200) para o cliente
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
+    }
+
 }

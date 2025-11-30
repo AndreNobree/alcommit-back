@@ -41,6 +41,7 @@ public class UserService {
 
         //pega do DTO o email e username para salvar no banco
         User user = new User();
+        //setEmail e setUsername é do lombok no model
         user.setEmail(dto.getEmail());
         user.setUsername(dto.getUsername());
 

@@ -32,16 +32,16 @@ public class User {
     @Column(name = "password_hash", nullable = false, columnDefinition = "TEXT")
     private String passwordHash;
 
-    @Column(name = "create_by")
+    @Column(name = "created_by")
     private Long createBy;
 
-    @Column(name = "create_at")
+    @Column(name = "created_at")
     private LocalDateTime createAt;
 
-    @Column(name = "update_by")
+    @Column(name = "updated_by")
     private Long updateBy;
 
-    @Column(name = "update_at")
+    @Column(name = "updated_at")
     private LocalDateTime updateAt;
 
 }

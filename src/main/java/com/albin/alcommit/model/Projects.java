@@ -1,10 +1,15 @@
 package com.albin.alcommit.model;
 
 import jakarta.persistence.*; // @entity, @table, @id ....
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "projects")
+@Getter
+@Setter
 public class Projects {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,15 +27,15 @@ public class Projects {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String location;
 
-    @Column(name = "create_by")
+    @Column(name = "created_by")
     private Long createBy;
 
-    @Column(name = "create_at")
+    @Column(name = "created_at")
     private LocalDateTime createAt;
 
-    @Column(name = "update_by")
+    @Column(name = "updated_by")
     private Long updateBy;
 
-    @Column(name = "update_at")
+    @Column(name = "updated_at")
     private LocalDateTime updateAt;
 }

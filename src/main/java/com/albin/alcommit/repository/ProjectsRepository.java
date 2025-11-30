@@ -15,4 +15,10 @@ public interface ProjectsRepository extends JpaRepository<Projects, Long> {
 
     // Retorna todos os projetos criados por um usuário específico [ SELECT * FROM projects WHERE create_by = ? ]
     List<Projects> findByCreateBy(Long userId);
+
+    boolean existsByName(String name);
+
+    boolean existsByRepository(String repository);
+
+    boolean existsByLocation(String location);
 }
