@@ -12,7 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users") //endpoint - /users/register
+@RequestMapping("/auth") //endpoint - /users/register
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @Autowired//cria e entrega objetos da classe sem instanciá-los com new.
