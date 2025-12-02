@@ -64,12 +64,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             //Verifica token + usuário
             if (user != null && jwtService.isTokenValid(token, email)) {
 
-                //Cria a autenticação do Spring Security (“Esse usuário está autenticado e pode acessar áreas privadas”)
+                CustomUserDetails userDetails = new CustomUserDetails(user);
+                // coloca o email no token
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
-                                user, null, List.of()
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
                         );
-                //Guarda a autenticação no contexto de segurança (global para essa request)
+
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
 
