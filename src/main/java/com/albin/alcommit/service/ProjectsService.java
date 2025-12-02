@@ -40,11 +40,12 @@ public class ProjectsService {
         projects.setStatus(dto.getStatus());
         projects.setRepository(dto.getRepository());
         projects.setLocation(dto.getLocation());
+
         //seta usario q criou o dado e a data
         projects.setCreateAt(LocalDateTime.now());
         projects.setUpdateAt(LocalDateTime.now());
-        projects.setCreateBy(1L);
-        projects.setUpdateBy(1L);
+//        projects.setCreateBy(1L);
+//        projects.setUpdateBy(1L);
 
         Projects saved = projectsRepository.save(projects);
 

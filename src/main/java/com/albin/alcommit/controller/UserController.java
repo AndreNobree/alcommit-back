@@ -27,7 +27,7 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserRegisterDTO dto) {
 
         //manda os dados para o service passando pelo DTO primeiro
-        UserResponseDTO createdUser = userService.register(dto);
+        UserResponseDTO createdUser = userService.registerDefault(dto);
 
         //manda sucess(200) para o cliente
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);

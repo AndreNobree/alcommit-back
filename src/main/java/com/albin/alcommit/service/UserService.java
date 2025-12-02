@@ -33,7 +33,7 @@ public class UserService {
     /**
      * Registra um novo usuário com os dados vindos do DTO.
      */
-    public UserResponseDTO register(UserRegisterDTO dto) {
+    public UserResponseDTO registerDefault(UserRegisterDTO dto) {
 
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("Email já está em uso");
