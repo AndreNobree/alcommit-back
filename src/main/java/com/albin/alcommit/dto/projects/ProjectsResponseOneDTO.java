@@ -5,15 +5,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProjectsResponseDTO {
-    private Long id;
+public class ProjectsResponseOneDTO {
     private String name;
     private String status;
+    private String location;
 
     // retornar para o cliente apenas o json
-    public ProjectsResponseDTO(Long id, String name, String status) {
-        this.id = id;
+    public ProjectsResponseOneDTO(String name, String status, String location) {
         this.name = name;
         this.status = status;
+        this.location = location;
     }
 }

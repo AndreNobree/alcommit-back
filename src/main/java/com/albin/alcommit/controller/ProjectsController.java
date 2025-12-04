@@ -2,6 +2,7 @@ package com.albin.alcommit.controller;
 
 import com.albin.alcommit.dto.projects.ProjectAddDTO;
 import com.albin.alcommit.dto.projects.ProjectsResponseDTO;
+import com.albin.alcommit.dto.projects.ProjectsResponseOneDTO;
 import com.albin.alcommit.model.Projects;
 import com.albin.alcommit.service.ProjectsService;
 import jakarta.validation.Valid;
@@ -21,12 +22,14 @@ public class ProjectsController {
     private ProjectsService projectsService;
 
 
+    //tela home
     @GetMapping("/myprojects")
-    public ResponseEntity<List<Projects>> getAllProjects(){
-        List<Projects> projects = projectsService.returnAll();
+    public ResponseEntity<List<ProjectsResponseDTO>> getProjectsLite() {
+        List<ProjectsResponseDTO> projects = projectsService.responseProjectsLite();
         return ResponseEntity.ok(projects);
     }
 
+    //tela para adicionar projetos
     @PostMapping("/addprojects")
     public ResponseEntity<ProjectsResponseDTO> newProject(@Valid @RequestBody ProjectAddDTO dto) {
         //manda os dados para o service passando pelo DTO primeiro
@@ -36,4 +39,10 @@ public class ProjectsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
     }
 
+    // tela de commits (onde vai ser retornados infos do projeto)
+    @GetMapping("/commit")
+    public ResponseEntity<List<ProjectsResponseOneDTO>> getProjectsOne() {
+        List<ProjectsResponseOneDTO> projects = projectsService.responseProjectsOne();
+        return ResponseEntity.ok(projects);
+    }
 }

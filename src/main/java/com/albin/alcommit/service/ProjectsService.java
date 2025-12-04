@@ -2,6 +2,7 @@ package com.albin.alcommit.service;
 
 import com.albin.alcommit.dto.projects.ProjectAddDTO;
 import com.albin.alcommit.dto.projects.ProjectsResponseDTO;
+import com.albin.alcommit.dto.projects.ProjectsResponseOneDTO;
 import com.albin.alcommit.model.Projects;
 import com.albin.alcommit.model.Technologies;
 import com.albin.alcommit.model.User;
@@ -29,9 +30,35 @@ public class ProjectsService {
     private UserRepository userRepository;
 
     //retornar uma lista de todos os projetos
-    public List<Projects> returnAll(){
-        return projectsRepository.findAll();
+    public List<ProjectsResponseOneDTO> responseProjectsOne(){
+        //pegar tudo pra depois retornar somente id, nome e status
+        List<Projects> projects = projectsRepository.findAll();
+        //model > response
+        return projects.stream()
+                .map(p -> new ProjectsResponseOneDTO(
+
+                        p.getName(),
+                        p.getStatus(),
+                        p.getLocation()
+                ))
+                .toList();
     }
+
+    // retorna projeto e status para o front (tela my-projects)
+    public List<ProjectsResponseDTO> responseProjectsLite(){
+        //pegar tudo pra depois retornar somente id, nome e status
+        List<Projects> projects = projectsRepository.findAll();
+
+        //model > response
+        return projects.stream()
+                .map(p -> new ProjectsResponseDTO(
+                        p.getId(),
+                        p.getName(),
+                        p.getStatus()
+                ))
+                .toList();
+    }
+
 
     public ProjectsResponseDTO addNewProject(ProjectAddDTO dto){
 
@@ -68,7 +95,7 @@ public class ProjectsService {
         //salva os projetos
         Projects saved = projectsRepository.save(projects);
 
-        // salva as tecnologias
+        // salva as tecnologias pegando o DTO do projects (tem uma lista de tecnlogias lá)
         if (dto.getTechnologies() != null) {
             for (String techName : dto.getTechnologies()) {
 
@@ -83,6 +110,6 @@ public class ProjectsService {
             }
         }
 
-        return new ProjectsResponseDTO(saved.getName(), saved.getStatus());
+        return new ProjectsResponseDTO(saved.getId(), saved.getName(), saved.getStatus());
     }
 }
