@@ -1,11 +1,15 @@
 package com.albin.alcommit.service;
 
+import com.albin.alcommit.dto.commit.CommitResponseDTO;
+import com.albin.alcommit.dto.commit.ProjectCommitsDTO;
 import com.albin.alcommit.dto.projects.ProjectAddDTO;
 import com.albin.alcommit.dto.projects.ProjectsResponseDTO;
 import com.albin.alcommit.dto.projects.ProjectsResponseOneDTO;
+import com.albin.alcommit.model.Commits;
 import com.albin.alcommit.model.Projects;
 import com.albin.alcommit.model.Technologies;
 import com.albin.alcommit.model.User;
+import com.albin.alcommit.repository.CommitsRepository;
 import com.albin.alcommit.repository.ProjectsRepository;
 import com.albin.alcommit.repository.TechnologiesRepository;
 import com.albin.alcommit.repository.UserRepository;
@@ -29,20 +33,23 @@ public class ProjectsService {
     @Autowired
     private UserRepository userRepository;
 
-    //retornar uma lista de todos os projetos
-    public List<ProjectsResponseOneDTO> responseProjectsOne(){
-        //pegar tudo pra depois retornar somente id, nome e status
-        List<Projects> projects = projectsRepository.findAll();
-        //model > response
-        return projects.stream()
-                .map(p -> new ProjectsResponseOneDTO(
+    @Autowired
+    private CommitsRepository commitsRepository;
 
-                        p.getName(),
-                        p.getStatus(),
-                        p.getLocation()
-                ))
-                .toList();
-    }
+//    //retornar uma lista de todos os projetos
+//    public List<ProjectsResponseOneDTO> responseProjectsOne(){
+//        //pegar tudo pra depois retornar somente id, nome e status
+//        List<Projects> projects = projectsRepository.findAll();
+//        //model > response
+//        return projects.stream()
+//                .map(p -> new ProjectsResponseOneDTO(
+//
+//                        p.getName(),
+//                        p.getStatus(),
+//                        p.getLocation()
+//                ))
+//                .toList();
+//    }
 
     // retorna projeto e status para o front (tela my-projects)
     public List<ProjectsResponseDTO> responseProjectsLite(){
@@ -54,7 +61,9 @@ public class ProjectsService {
                 .map(p -> new ProjectsResponseDTO(
                         p.getId(),
                         p.getName(),
-                        p.getStatus()
+                        p.getStatus(),
+                        p.getLocation(),
+                        p.getRepository()
                 ))
                 .toList();
     }
@@ -110,6 +119,44 @@ public class ProjectsService {
             }
         }
 
-        return new ProjectsResponseDTO(saved.getId(), saved.getName(), saved.getStatus());
+        return new ProjectsResponseDTO(saved.getId(), saved.getName(), saved.getStatus(), saved.getLocation(), saved.getRepository());
     }
+
+    //retorno para a tela de commits (info de projeto e lista de commits)
+    public ProjectCommitsDTO getProjectWithCommits(Long projectId) {
+
+        //procura commits pelo projectID
+        Projects project = projectsRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Projeto não encontrado"));
+
+        //preenchimento json projetos
+        ProjectsResponseDTO projectDTO = new ProjectsResponseDTO(
+                project.getId(),
+                project.getName(),
+                project.getStatus(),
+                project.getLocation(),
+                project.getRepository()
+        );
+
+        //Carregar os commits
+        List<Commits> commits = commitsRepository.findByProjectId(projectId);
+
+        List<CommitResponseDTO> commitDTOs = commits.stream()
+                .map(c -> new CommitResponseDTO(
+                        c.getMessage(),
+                        c.getBranch(),
+                        c.getCreateBy(),
+                        c.getCreateAt(),
+                        c.getUpdateBy(),
+                        c.getUpdateAt()
+                ))
+                .toList();
+
+        // conta os commits existentes
+        int total = commits.size();
+
+
+        return new ProjectCommitsDTO(projectDTO, commitDTOs, total);
+    }
+
 }

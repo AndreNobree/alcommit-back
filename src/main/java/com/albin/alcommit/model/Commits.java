@@ -1,10 +1,15 @@
 package com.albin.alcommit.model;
 
 import jakarta.persistence.*; // @entity, @table, @id ....
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "commits")
+@Getter
+@Setter
 public class Commits {
 
     @Id
@@ -12,7 +17,7 @@ public class Commits {
     private Long id;
 
     @Column(nullable = false, name = "project_id")
-    private Long projectID;
+    private Long projectId;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String message;
@@ -34,4 +39,5 @@ public class Commits {
 
     @Column(name = "updated_at")
     private LocalDateTime updateAt;
+
 }
